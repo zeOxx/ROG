@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Rog.cs" />
+    <Compile Include="ScreenManager\Components\Button.cs" />
     <Compile Include="ScreenManager\Manager.cs" />
     <Compile Include="ScreenManager\Menu.cs" />
   </ItemGroup>
@@ -55,6 +56,23 @@
     <None Include="Fonts\visitor1.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Textures\Buttons\btn_01.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Buttons\credits.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Buttons\new_game.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Buttons\options.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Textures\Buttons\quit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

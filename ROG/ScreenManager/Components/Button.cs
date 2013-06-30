@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using SFML;
 using SFML.Graphics;
 using SFML.Window;
@@ -12,51 +13,64 @@ namespace ROG.ScreenManager.Components
     {
         #region Class Variables
         private Texture texture;
-        private List<Texture> textureStyles;
+        private Sprite sprite;
         private Text text;
-        private int style;
+        private Font font;
+        private bool hasText;
         #endregion
 
         #region Constructor
-        public Button(int style,String text)
+        public Button(String text, Font font, Texture texture)
         {
-            setupTextureStyleList();
+            if (text != null) {
+                hasText = true;
+                this.font = font;
+                setupText(text);
+            }
+            else
+                hasText = false;
 
-            Style = style;
+            this.texture = texture;
 
-            texture = textureStyles[Style];
+            sprite = new Sprite(this.texture);
         }
         #endregion
 
         #region Methods
-        private void setupTextureStyleList()
+        #region Public
+        public void setPosition(Vector2f position)
         {
-            textureStyles = new List<Texture>();
+            sprite.Position = position;
 
-            textureStyles.Add(new Texture("Textures/Buttons/btn_01.png"));
-        }
+            if (hasText) {
+                Vector2f btnCenter = new Vector2f(sprite.GetLocalBounds().Width / 2, sprite.GetLocalBounds().Height / 2);
+                Vector2f textCenter = new Vector2f(text.GetLocalBounds().Width / 2, text.GetLocalBounds().Height / 2);
 
-        private void setupText(String text)
-        {
-            this.text = new Text()
-        }
-        #endregion
+                text.Position = new Vector2f((sprite.Position.X + btnCenter.X) - textCenter.X, sprite.Position.Y);
 
-        #region Accessors
-        private int Style
-        {
-            get { return this.style; }
-            set
-            {
-                this.style = value;
-                
-                //Clamping
-                if (this.style < 0)
-                    this.style = 0;
-                if (this.style > textureStyles.Count())
-                    this.style = textureStyles.Count() - 1;
+                Console.WriteLine(text.GetLocalBounds().Top);
             }
         }
+
+        public void centerButton(Vector2u windowSize, bool hori, bool vert)
+        {
+
+        }
+
+        public void draw(RenderWindow window)
+        {
+            window.Draw(sprite);
+
+            if (hasText)
+                window.Draw(text);
+        }
+        #endregion
+        #region Private
+        private void setupText(String text)
+        {
+            this.text = new Text(text, this.font, 30);
+        }
+        #endregion
         #endregion
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using SFML;
 using SFML.Graphics;
 using SFML.Window;
@@ -11,7 +12,7 @@ namespace ROG.ScreenManager
     class Menu
     {
         #region Class Variables
-        private List<Text> menuItems;
+        private List<Components.Button> buttonList;
         private Text[] lowerButtons;
         private Font textFont;
         private Vector2u windowSize;
@@ -27,61 +28,53 @@ namespace ROG.ScreenManager
 
             setupLowerBtns(bottomBtns);
 
-            menuItems = new List<Text>();
-
             windowSize = new Vector2u(window.Size.X, window.Size.Y);
 
             white = new Color(Color.White);
             yellow = new Color(Color.Yellow);
 
+            buttonList = new List<Components.Button>();
         }
         #endregion
 
         #region Methods
         #region Public
-        public void addMenuItem(String text)
+        public void addButton(Texture texture, String text)
         {
-            Text tempText = new Text(text, textFont, 30);
+            Components.Button tmpBtn = new Components.Button(text, textFont, texture);
 
-            menuItems.Add(tempText);
+            buttonList.Add(tmpBtn);
         }
 
-        public void positionText()
+        public void positionButtons(int index, Vector2f position)
         {
-            IndexSelected = 0;
+            buttonList[index].setPosition(position);
+        }
 
-            float textHeight = 0;
-            float totalTextHeight = 0;
-            float margin = 15;
-
-            // Add total height of items. All items are the same height
-            textHeight = menuItems[0].GetLocalBounds().Height;
-            totalTextHeight = (textHeight * menuItems.Count()) + (margin * menuItems.Count());
-
-            float textPos = (windowSize.Y / 2) - totalTextHeight;
-
-            // Position items accordingly
-            for (int j = 0; j < menuItems.Count(); j++)
+        public void positionButtons(int index, String position, bool hori, bool vert)
+        {
+            if (position == "center")
             {
-                menuItems[j].Position = new Vector2f(0, textPos);
-
-                textPos += (textHeight + margin);
+                buttonList[index].centerButton(windowSize, hori, vert);
             }
-            setTextColor();
+            else
+            {
+                Console.WriteLine("Position not recognized!");
+            }
         }
 
         public void update(int value)
         {
             IndexSelected += value;
 
-            setTextColor();
+            //setTextColor();
         }
 
         public void draw(RenderWindow window, bool controller)
         {
-            for (int i = 0; i < menuItems.Count(); i++)
+            for (int i = 0; i < buttonList.Count(); i++)
             {
-                window.Draw(menuItems[i]);
+                buttonList[i].draw(window);
             }
 
             if (controller)
@@ -111,21 +104,18 @@ namespace ROG.ScreenManager
             lowerButtons[0] = okText;
         }
 
-        private void setTextColor()
-        {
-            for (int i = 0; i < menuItems.Count(); i++)
-            {
-                menuItems[i].Color = white;
+        //private void setTextColor()
+        //{
+        //    for (int i = 0; i < menuItems.Count(); i++)
+        //    {
+        //        menuItems[i].Color = white;
 
-                Console.WriteLine(IndexSelected);
-
-                if (IndexSelected == i)
-                {
-                    menuItems[i].Color = yellow;
-                    Console.WriteLine("DERP");
-                }
-            }
-        }
+        //        if (IndexSelected == i)
+        //        {
+        //            menuItems[i].Color = yellow;
+        //        }
+        //    }
+        //}
         #endregion
         #endregion
 
@@ -141,8 +131,8 @@ namespace ROG.ScreenManager
                 if (this.indexSelected < 0)
                     this.indexSelected = 0;
 
-                if (this.indexSelected >= menuItems.Count())
-                    this.indexSelected = menuItems.Count() - 1;
+                if (this.indexSelected >= buttonList.Count())
+                    this.indexSelected = buttonList.Count() - 1;
             }
         }
         #endregion
