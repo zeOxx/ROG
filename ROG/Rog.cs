@@ -65,10 +65,16 @@ namespace ROG
                 window.Close();
 
             if (e.Code == Keyboard.Key.Up)
-                screenManager.update(-1);
+                screenManager.update('u');
 
             if (e.Code == Keyboard.Key.Down)
-                screenManager.update(1);
+                screenManager.update('d');
+
+            if (e.Code == Keyboard.Key.Right)
+                screenManager.update('r');
+
+            if (e.Code == Keyboard.Key.Left)
+                screenManager.update('l');
         }
         #endregion
     }

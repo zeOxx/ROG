@@ -37,14 +37,16 @@ namespace ROG.ScreenManager
 
         #region Methods
         #region Public
-        public void update(int value)
+        public void update(char dir)
         {
             switch (menuState)
             {
                 case MenuState.MAIN:
-                    mainMenu.update(value);
+                    mainMenu.update(dir);
                     break;
             }
+
+            Console.WriteLine(dir);
         }
 
         public void draw(RenderWindow window)
@@ -68,13 +70,42 @@ namespace ROG.ScreenManager
             textureStyles.Add(new Texture("Textures/Buttons/quit.png"));            // 4
         }
         #endregion
+
         #region Private
         private void setupMainMenu(RenderWindow window)
         {
+            Vector2u windowSize = new Vector2u(window.Size.X, window.Size.Y);
+            
             mainMenu = new Menu(menuFont, 1, window);
+            Components.Button tmpBtn;
 
-            mainMenu.addButton(textureStyles[1], null);
-            mainMenu.positionButtons(0, new Vector2f(100.0f, 100.0f));
+            // New Game button  // 0
+            tmpBtn = new Components.Button(null, menuFont, textureStyles[1]);
+            tmpBtn.centerButton(windowSize, true, false);
+            tmpBtn.setPositionY(130.0f);
+            mainMenu.addButton(tmpBtn);
+
+            Vector2f mainBtnPos = new Vector2f(tmpBtn.getSprite().Position.X, tmpBtn.getSprite().Position.Y);
+            
+            // Credits button   // 1
+            tmpBtn = new Components.Button(null, menuFont, textureStyles[2]);
+            tmpBtn.setPosition(new Vector2f((mainBtnPos.X + textureStyles[1].Size.X), mainBtnPos.Y + 140));
+            mainMenu.addButton(tmpBtn);
+            
+            // Options button   // 2
+            tmpBtn = new Components.Button(null, menuFont, textureStyles[3]);
+            tmpBtn.setPosition(new Vector2f((mainBtnPos.X - tmpBtn.getSprite().GetLocalBounds().Width), mainBtnPos.Y + 140));
+            mainMenu.addButton(tmpBtn);
+
+            // Quit button      // 3
+            tmpBtn = new Components.Button(null, menuFont, textureStyles[4]);
+            tmpBtn.centerButton(windowSize, true, false);
+            tmpBtn.setPositionY(mainBtnPos.Y + textureStyles[1].Size.Y);
+            mainMenu.addButton(tmpBtn);
+
+            // Setup selectRect
+            mainMenu.setSelectRectSize(new Vector2f(mainMenu.buttonList[0].getSprite().GetLocalBounds().Width, mainMenu.buttonList[0].getSprite().GetLocalBounds().Height));
+            mainMenu.setSelectRectPos(mainMenu.buttonList[0].getSprite().Position);
         }
         #endregion
         #endregion

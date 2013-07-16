@@ -12,13 +12,17 @@ namespace ROG.ScreenManager
     class Menu
     {
         #region Class Variables
-        private List<Components.Button> buttonList;
+        public List<Components.Button> buttonList;
+        
+        private RectangleShape selectRect;
         private Text[] lowerButtons;
         private Font textFont;
         private Vector2u windowSize;
-        private int indexSelected;
         private Color white;
         private Color yellow;
+
+        private enum Selected { CREDITS, NEW, OPTIONS, QUIT };
+        Selected selected;
         #endregion
 
         #region Constructor
@@ -27,6 +31,12 @@ namespace ROG.ScreenManager
             textFont = font;
 
             setupLowerBtns(bottomBtns);
+
+            selected = Selected.NEW;
+            selectRect = new RectangleShape();
+            selectRect.FillColor = new Color(255, 255, 255, 32);
+            selectRect.OutlineColor = new Color(128, 128, 128);
+            selectRect.OutlineThickness = 5;
 
             windowSize = new Vector2u(window.Size.X, window.Size.Y);
 
@@ -39,35 +49,68 @@ namespace ROG.ScreenManager
 
         #region Methods
         #region Public
-        public void addButton(Texture texture, String text)
+        public void addButton(Components.Button tmpBtn)
         {
-            Components.Button tmpBtn = new Components.Button(text, textFont, texture);
-
             buttonList.Add(tmpBtn);
         }
 
-        public void positionButtons(int index, Vector2f position)
+        public void update(char key)
         {
-            buttonList[index].setPosition(position);
-        }
-
-        public void positionButtons(int index, String position, bool hori, bool vert)
-        {
-            if (position == "center")
+            if (key == 'u')
             {
-                buttonList[index].centerButton(windowSize, hori, vert);
+                if (selected == Selected.QUIT)
+                {
+                    selected = Selected.NEW;
+                    setSelectRectSize(new Vector2f(buttonList[0].getSprite().GetLocalBounds().Width, buttonList[0].getSprite().GetLocalBounds().Height));
+                    setSelectRectPos(buttonList[0].getSprite().Position);
+                }
             }
-            else
+
+            if (key == 'd')
             {
-                Console.WriteLine("Position not recognized!");
+                if (selected != Selected.QUIT)
+                {
+                    selected = Selected.QUIT;
+                    setSelectRectSize(new Vector2f(buttonList[3].getSprite().GetLocalBounds().Width, buttonList[3].getSprite().GetLocalBounds().Height));
+                    setSelectRectPos(buttonList[3].getSprite().Position);
+                }
             }
-        }
 
-        public void update(int value)
-        {
-            IndexSelected += value;
+            if (key == 'r')
+            {
+                if (selected == Selected.NEW)
+                {
+                    selected = Selected.CREDITS;
+                    setSelectRectSize(new Vector2f(buttonList[1].getSprite().GetLocalBounds().Width, buttonList[1].getSprite().GetLocalBounds().Height));
+                    setSelectRectPos(buttonList[1].getSprite().Position);
+                }
 
-            //setTextColor();
+                if (selected == Selected.OPTIONS)
+                {
+                    selected = Selected.NEW;
+                    setSelectRectSize(new Vector2f(buttonList[0].getSprite().GetLocalBounds().Width, buttonList[0].getSprite().GetLocalBounds().Height));
+                    setSelectRectPos(buttonList[0].getSprite().Position);
+                }
+            }
+
+            if (key == 'l')
+            {
+                if (selected == Selected.NEW)
+                {
+                    selected = Selected.OPTIONS;
+                    setSelectRectSize(new Vector2f(buttonList[2].getSprite().GetLocalBounds().Width, buttonList[2].getSprite().GetLocalBounds().Height));
+                    setSelectRectPos(buttonList[2].getSprite().Position);
+                }
+
+                if (selected == Selected.CREDITS)
+                {
+                    selected = Selected.NEW;
+                    setSelectRectSize(new Vector2f(buttonList[0].getSprite().GetLocalBounds().Width, buttonList[0].getSprite().GetLocalBounds().Height));
+                    setSelectRectPos(buttonList[0].getSprite().Position);
+                }
+            }
+
+            Console.WriteLine(selected);
         }
 
         public void draw(RenderWindow window, bool controller)
@@ -84,6 +127,8 @@ namespace ROG.ScreenManager
                     window.Draw(lowerButtons[j]);
                 }
             }
+
+            window.Draw(selectRect);
         }
         #endregion
         #region Private
@@ -104,6 +149,16 @@ namespace ROG.ScreenManager
             lowerButtons[0] = okText;
         }
 
+        public void setSelectRectSize(Vector2f size)
+        {
+            selectRect.Size = size;
+        }
+
+        public void setSelectRectPos(Vector2f pos)
+        {
+            selectRect.Position = pos;
+        }
+
         //private void setTextColor()
         //{
         //    for (int i = 0; i < menuItems.Count(); i++)
@@ -117,24 +172,6 @@ namespace ROG.ScreenManager
         //    }
         //}
         #endregion
-        #endregion
-
-        #region Getters/Setters
-        private int IndexSelected
-        {
-            get { return this.indexSelected; }
-            // Prevent indexSelected from going out of bounds and allows for looping
-            set 
-            { 
-                this.indexSelected = value;
-
-                if (this.indexSelected < 0)
-                    this.indexSelected = 0;
-
-                if (this.indexSelected >= buttonList.Count())
-                    this.indexSelected = buttonList.Count() - 1;
-            }
-        }
         #endregion
     }
 }

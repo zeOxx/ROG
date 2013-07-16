@@ -52,9 +52,30 @@ namespace ROG.ScreenManager.Components
             }
         }
 
+        public void setPositionX(float x)
+        {
+            sprite.Position = new Vector2f(x, sprite.Position.Y);
+        }
+
+        public void setPositionY(float y)
+        {
+            sprite.Position = new Vector2f(sprite.Position.X, y);
+        }
+
         public void centerButton(Vector2u windowSize, bool hori, bool vert)
         {
-
+            if (hori && !vert)
+            {
+                sprite.Position = new Vector2f((windowSize.X / 2) - (sprite.GetLocalBounds().Width / 2), sprite.Position.Y);
+            }
+            if (vert && !hori)
+            {
+                sprite.Position = new Vector2f(sprite.Position.X, (windowSize.Y / 2) - (sprite.GetLocalBounds().Height / 2));
+            }
+            if (hori && vert)
+            {
+                sprite.Position = new Vector2f((windowSize.X / 2) - (sprite.GetLocalBounds().Width / 2), (windowSize.Y / 2) - (sprite.GetLocalBounds().Height / 2));
+            }
         }
 
         public void draw(RenderWindow window)
@@ -63,6 +84,11 @@ namespace ROG.ScreenManager.Components
 
             if (hasText)
                 window.Draw(text);
+        }
+
+        public Sprite getSprite()
+        {
+            return sprite;
         }
         #endregion
         #region Private
